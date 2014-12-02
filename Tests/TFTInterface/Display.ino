@@ -114,3 +114,49 @@ void LoadFromFile()
   
   UpdateElements();
 }
+
+int TouchPress()
+{
+  if (myTouch.dataAvailable())
+  {
+    myTouch.read();
+    x_touch=myTouch.getX();
+    y_touch=myTouch.getY();
+    LastButton = -1;
+    
+    for(uint8_t i = 0;i<ElementsCount;i++)
+    {
+      if (x_touch<TFT2TOUCH_X(Elements[i].X) 
+        && x_touch>TFT2TOUCH_X(Elements[i].X+Elements[i].width) 
+        && y_touch>Elements[i].Y 
+        && y_touch<Elements[i].Y+Elements[i].height) {
+        LastButton = i;
+      }
+      DrawButtonBorder(i);
+    }
+    return -1;
+  }
+  else
+  {
+    int res = LastButton;
+    LastButton = -1;
+    return res;
+  }
+}
+
+void DrawButtonBorder(uint8_t buttonID)
+{
+  if (LastButton == buttonID)
+  {
+    Screen.setColor(VGA_RED);
+  }
+  else
+  {
+    Screen.setColor(VGA_WHITE);
+  }
+  Screen.drawRoundRect(
+    Elements[buttonID].X,
+    Elements[buttonID].Y,
+    Elements[buttonID].X + Elements[buttonID].width,
+    Elements[buttonID].Y + Elements[buttonID].height);
+}
