@@ -1,6 +1,3 @@
-#include <UTFT.h>
-#include <UTouch.h>
-#include <SD.h>
 #include "Display.h"
 
 void setup()

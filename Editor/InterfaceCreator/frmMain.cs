@@ -110,17 +110,11 @@ namespace InterfaceCreator
                 
 
                 System.Xml.XmlWriter fi = System.Xml.XmlWriter.Create(IDsFileName);
-                System.IO.FileStream fd = new System.IO.FileStream(DefsFileName, System.IO.FileMode.Create);
-
-                fi.WriteStartDocument();
-                fi.WriteStartElement("Elements");
+                System.IO.StreamWriter fd = new System.IO.StreamWriter(DefsFileName);
 
                 Screen.Save(fm, fi, fd);
-                /*foreach (KeyValuePair<string, TInterfaceElement> itm in Screen.listitem)
-                    itm.Value.Save(fm, fi, fd);*/
+
                 fm.Close();
-                fi.WriteEndElement();
-                fi.WriteEndDocument();
                 fi.Close();
                 fd.Close();
 
@@ -140,18 +134,18 @@ namespace InterfaceCreator
                 // сначала открываем основной файл и читаем настройки экрана
                 System.IO.FileStream fm = new System.IO.FileStream(MainFileName, System.IO.FileMode.Open);
 
-                byte cstr = 0, cbtn = 0;
-                Screen.LoadScreen(fm, ref cstr, ref cbtn);
+                /*byte cstr = 0, cbtn = 0;
+                Screen.LoadScreen(fm, ref cstr, ref cbtn);*/
                 // далее читаем xml и создаем структуру элементов
                 System.Xml.XmlReader ids = System.Xml.XmlReader.Create(IDsFileName);
-                Screen.LoadElements(cstr, cbtn, fm, ids);
+                Screen.LoadElements(ids);
                 // потом из основного файла читаем сами элементы
-                int i=0;
+                /*int i=0;
                 while (cstr + cbtn > i)
                 {
                     Screen.LoadProperties(fm);
                     i++;
-                }
+                }*/
                 // закрываем все
                 fm.Close();
                 fm.Dispose();

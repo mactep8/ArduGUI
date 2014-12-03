@@ -93,6 +93,18 @@ namespace InterfaceCreator
         {
             return ItemName;
         }
+        private Boolean _canSelect;
+        public Boolean CanSelect
+        {
+            get
+            {
+                return _canSelect;
+            }
+            set
+            {
+                _canSelect = value;
+            }
+        }
 
         private VGA_COLOR _backcolor;
         public VGA_COLOR BackColor
@@ -163,7 +175,7 @@ namespace InterfaceCreator
 
         public void Save(System.IO.FileStream fs, System.Xml.XmlWriter fi)
         {
-            UInt16 eSize = (UInt16)(Text.Length + 13);
+            UInt16 eSize = (UInt16)(Text.Length + 14);
             utftUtils.Save2Bytes(fs, eSize);
             fs.WriteByte((byte)GetItemTypeNumber());
             fs.WriteByte(ID);
@@ -175,6 +187,7 @@ namespace InterfaceCreator
             utftUtils.Save2Bytes(fs, clr);
             clr = utftUtils.GetUTFTColorBytes(FontColor);
             utftUtils.Save2Bytes(fs, clr);
+            fs.WriteByte(Convert.ToByte(_canSelect));
             fs.WriteByte((byte)Text.Length);
             char[] arr = Text.ToCharArray();
             for (int i = 0; i < Text.Length; i++)
@@ -183,6 +196,14 @@ namespace InterfaceCreator
             fi.WriteStartElement("Element");
             fi.WriteElementString("ItemType", ItemType);
             fi.WriteElementString("ID", ID.ToString());
+            fi.WriteElementString("X", X.ToString());
+            fi.WriteElementString("Y", Y.ToString());
+            fi.WriteElementString("Width", width.ToString());
+            fi.WriteElementString("Height", heigth.ToString());
+            fi.WriteElementString("BackColor", BackColor.ToString());
+            fi.WriteElementString("FontColor", FontColor.ToString());
+            fi.WriteElementString("CanSelect", CanSelect.ToString());
+            fi.WriteElementString("Text", Text);
             fi.WriteElementString("ItemName", ItemName);
             fi.WriteEndElement();
         }

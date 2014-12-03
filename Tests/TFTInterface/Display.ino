@@ -1,3 +1,11 @@
+
+uint16_t ReadTwoBytes()
+{
+  byte b1 = scrFile.read();
+  byte b2 = scrFile.read();
+  return (b1<<8)|b2;
+}
+
 void InitDisplay()
 {
   Screen.InitLCD(LANDSCAPE);
@@ -8,16 +16,19 @@ void InitDisplay()
   pinMode(53, OUTPUT);
   if (!SD.begin()) Serial.println("SD failed...");
   else Serial.println("SD Ok.");
-  scrFile = SD.open(SCREEN_FILENAME);
-  
-  if (scrFile) LoadFromFile();
 }
 
-uint16_t ReadTwoBytes()
+void LoadScreenFromFile(char * aFileName, uint16_t aLeft, uint16_t aTop)
 {
-  byte b1 = scrFile.read();
-  byte b2 = scrFile.read();
-  return (b1<<8)|b2;
+  scrFile = SD.open(aFileName);
+  
+  if (scrFile) 
+  {
+    LoadScreenSetup();
+    LoadElements();
+    UpdateElements(aLeft, aTop);
+    scrFile.close();
+  }
 }
 
 byte es = 0;
@@ -26,18 +37,15 @@ byte ea = 0;
 void LoadScreenSetup()
 {
   byte sSize = scrFile.read();
-  uint16_t width = ReadTwoBytes();
-  uint16_t height = ReadTwoBytes();
-  uint16_t bk_color = ReadTwoBytes();
-  uint16_t fnt_color = ReadTwoBytes();
+  screenWidth = ReadTwoBytes();
+  screenHeight = ReadTwoBytes();
+  screenBkColor = ReadTwoBytes();
+  screenFntColor = ReadTwoBytes();
   es = scrFile.read();
   ea = scrFile.read();
   Elements = (tActiveElement *)malloc(sizeof(tActiveElement) * ea);
   ElementsCount = ea;
   Serial.print("Elements Count ="); Serial.println(ElementsCount);
-  Screen.clrScr();
-  Screen.setBackColor(bk_color);
-  Screen.setColor(fnt_color);
 }
 
 void LoadElement()
@@ -53,13 +61,17 @@ void LoadElement()
   byte height = scrFile.read();
   uint16_t bk_color = ReadTwoBytes();
   uint16_t fnt_color = ReadTwoBytes();
+  byte CanSelect = scrFile.read();
   byte lng = scrFile.read();
   char * txt = (char *)malloc(lng+1);
   for (byte i=0;i<lng;i++)
     txt[i] = scrFile.read();
   txt[lng] = '\0';
   if (itemtype == 3)
+  {
     Screen.print(txt, X, Y);
+    free(txt);
+  }
   else
   {
     Elements[itemid].X = X;
@@ -68,6 +80,7 @@ void LoadElement()
     Elements[itemid].height = height;
     Elements[itemid].BkColor = bk_color;
     Elements[itemid].FntColor = fnt_color;
+    Elements[itemid].CanFocus = CanSelect;
     Elements[itemid].txt_len = lng;
     Elements[itemid].txt = txt;
     Serial.println("Element stored.");
@@ -85,8 +98,32 @@ void LoadElements()
   }
 }
 
-void UpdateElements()
+void UpdateElements(uint16_t aLeft, uint16_t aTop)
 {
+  uint16_t xmax = Screen.getDisplayXSize();
+  uint16_t ymax = Screen.getDisplayYSize();
+  screenLeft = aLeft;
+  screenTop = aTop;
+  if (aLeft + screenWidth > xmax) screenLeft = xmax-screenWidth;
+  if (aTop + screenHeight > ymax) screenTop = ymax-screenHeight;
+  if (screenLeft==0 && screenTop==0 && xmax==screenWidth && ymax==screenHeight)
+  {
+    Screen.clrScr();
+    Screen.setBackColor(screenBkColor);
+    Screen.setColor(screenFntColor);
+  }
+  else
+  {
+    Screen.setColor(screenBkColor);
+    Screen.drawRoundRect(
+      screenLeft,
+      screenTop,
+      screenLeft + screenWidth,
+      screenTop + screenHeight);
+    Screen.setColor(screenFntColor);
+  }
+
+
   Serial.println("Drawing Elements...");
   for(byte i=0;i<ElementsCount;i++)
     UpdateElement(i);
@@ -104,15 +141,6 @@ void UpdateElement(byte indx)
   uint8_t fsx = (Elements[indx].width - Screen.cfont.x_size * Elements[indx].txt_len)/2;
   uint8_t fsy = (Elements[indx].height - Screen.cfont.y_size)/2;
   Screen.print(Elements[indx].txt,Elements[indx].X + fsx,Elements[indx].Y + fsy);
-}
-
-void LoadFromFile()
-{
-  LoadScreenSetup();
-  
-  LoadElements();
-  
-  UpdateElements();
 }
 
 int TouchPress()
@@ -159,4 +187,11 @@ void DrawButtonBorder(uint8_t buttonID)
     Elements[buttonID].Y,
     Elements[buttonID].X + Elements[buttonID].width,
     Elements[buttonID].Y + Elements[buttonID].height);
+}
+
+void CloseScreen()
+{
+  for (uint8_t i=0;i<ElementsCount;i++)
+    free(Elements[i].txt);
+  free(Elements);
 }

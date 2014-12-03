@@ -36,24 +36,6 @@ namespace InterfaceCreator
         public static UInt16 GetUTFTColorBytes(VGA_COLOR index)
         {
             UInt16 res = 0;
-            /*
-#define VGA_BLACK		0x0000
-#define VGA_WHITE		0xFFFF
-#define VGA_RED			0xF800
-#define VGA_GREEN		0x0400
-#define VGA_BLUE		0x001F
-#define VGA_SILVER		0xC618
-#define VGA_GRAY		0x8410
-#define VGA_MAROON		0x8000
-#define VGA_YELLOW		0xFFE0
-#define VGA_OLIVE		0x8400
-#define VGA_LIME		0x07E0
-#define VGA_AQUA		0x07FF
-#define VGA_TEAL		0x0410
-#define VGA_NAVY		0x0010
-#define VGA_FUCHSIA		0xF81F
-#define VGA_PURPLE		0x8010
-             */
             switch (index)
             {
                 case VGA_COLOR.VGA_BLACK: res = 0x0000; break;
@@ -116,6 +98,33 @@ namespace InterfaceCreator
                 case 0xF81F: res = VGA_COLOR.VGA_FUCHSIA; break;
                 case 0x8010: res = VGA_COLOR.VGA_PURPLE; break;
             }
+            return res;
+        }
+
+        public static VGA_COLOR GetUTFTColor(string name)
+        {
+            VGA_COLOR res = VGA_COLOR.VGA_BLACK;
+
+            switch (name)
+            {
+                case "VGA_BLACK" :res=VGA_COLOR.VGA_BLACK;break;
+                case "VGA_WHITE" :res=VGA_COLOR.VGA_WHITE;break;
+                case "VGA_RED":res=VGA_COLOR.VGA_RED;break;
+                case "VGA_GREEN" :res=VGA_COLOR.VGA_GREEN;break;
+                case "VGA_BLUE": res = VGA_COLOR.VGA_BLUE; break;
+                case "VGA_SILVER": res = VGA_COLOR.VGA_SILVER; break;
+                case "VGA_GRAY": res = VGA_COLOR.VGA_GRAY; break;
+                case "VGA_MAROON": res = VGA_COLOR.VGA_MAROON; break;
+                case "VGA_YELLOW": res = VGA_COLOR.VGA_YELLOW; break;
+                case "VGA_OLIVE": res = VGA_COLOR.VGA_OLIVE; break;
+                case "VGA_LIME": res = VGA_COLOR.VGA_LIME; break;
+                case "VGA_AQUA": res = VGA_COLOR.VGA_AQUA; break;
+                case "VGA_TEAL": res = VGA_COLOR.VGA_TEAL; break;
+                case "VGA_NAVY": res = VGA_COLOR.VGA_NAVY; break;
+                case "VGA_FUCHSIA": res = VGA_COLOR.VGA_FUCHSIA; break;
+                case "VGA_PURPLE": res = VGA_COLOR.VGA_PURPLE; break;
+            }
+
             return res;
         }
     }

@@ -138,8 +138,17 @@ namespace InterfaceCreator
                 }
         }
 
-        public void Save(System.IO.FileStream fs, System.Xml.XmlWriter fi, System.IO.FileStream fd)
+        public void Save(System.IO.FileStream fs, System.Xml.XmlWriter fi, System.IO.StreamWriter fd)
         {
+            fi.WriteStartDocument();
+            fi.WriteStartElement("Document");
+            fi.WriteStartElement("Screen");
+            fi.WriteElementString("SCREEN_Width", Width.ToString());
+            fi.WriteElementString("SCREEN_Height", Height.ToString());
+            fi.WriteElementString("SCREEN_BackColor", BackColor.ToString());
+            fi.WriteElementString("SCREEN_FontColor", FontColor.ToString());
+            fi.WriteEndElement();
+
             byte lbl = 0;
             byte btn = 0;
             foreach (KeyValuePair<string, TInterfaceElement> e in listitem)
@@ -159,26 +168,22 @@ namespace InterfaceCreator
 
             fs.WriteByte((byte)lbl);
             fs.WriteByte((byte)btn);
+            fi.WriteStartElement("Elements");
 
             foreach (KeyValuePair<string, TInterfaceElement> e in listitem)
             {
                 e.Value.Save(fs, fi);
+                if (e.Value.ItemType!="Label")
+                    fd.WriteLine(String.Format("#define {0} {1}", e.Value.ItemName, e.Value.ID));
             }
+
+            fi.WriteEndElement();
+
+            fi.WriteEndElement();
+            fi.WriteEndDocument();
         }
 
-        public void LoadScreen(System.IO.FileStream fs, ref byte cstr, ref byte cbtn)
-        {
-            byte eSize = (byte)fs.ReadByte();
-            Width = utftUtils.Read2Bytes(fs);
-            Height = utftUtils.Read2Bytes(fs);
-            BackColor = utftUtils.GetUTFTColor(utftUtils.Read2Bytes(fs));
-            FontColor = utftUtils.GetUTFTColor(utftUtils.Read2Bytes(fs));
-
-            cstr = (byte)fs.ReadByte();
-            cbtn = (byte)fs.ReadByte();
-        }
-
-        public void LoadElements(int cstr, int cbtn, System.IO.FileStream fs, System.Xml.XmlReader ids)
+        public void LoadElements(System.Xml.XmlReader ids)
         {
             TInterfaceElement ie = new TInterfaceElement();
             while (ids.Read())
@@ -186,6 +191,26 @@ namespace InterfaceCreator
                 {
                     switch (ids.Name)
                     {
+                        case "SCREEN_Width":
+                            {
+                                ids.Read();
+                                Width = Convert.ToInt16(ids.Value);
+                            }; break;
+                        case "SCREEN_Height":
+                            {
+                                ids.Read();
+                                Height = Convert.ToInt16(ids.Value);
+                            }; break;
+                        case "SCREEN_BackColor":
+                            {
+                                ids.Read();
+                                BackColor = utftUtils.GetUTFTColor(ids.Value);
+                            }; break;
+                        case "SCREEN_FontColor":
+                            {
+                                ids.Read();
+                                FontColor = utftUtils.GetUTFTColor(ids.Value);
+                            }; break;
                         case "Element":
                             ie = new TInterfaceElement();
                             break;
@@ -226,36 +251,18 @@ namespace InterfaceCreator
                             }
                             break;
                         case "ID": ids.Read(); ie.ID = Convert.ToByte(ids.Value); break;
-                        case "ItemName": ids.Read(); ie.ItemName = ids.Value; listitem.Add(ie.ItemName, ie); break;
+                        case "ItemName": ids.Read(); ie.ItemName = ids.Value; listitem.Add(ie.ItemName, ie); AddItem(ie); break;
+                        case "X": ids.Read(); ie.X = Convert.ToInt16(ids.Value); break;
+                        case "Y": ids.Read(); ie.Y = Convert.ToInt16(ids.Value); break;
+                        case "Width": ids.Read(); ie.width = Convert.ToInt16(ids.Value); break;
+                        case "Height": ids.Read(); ie.heigth = Convert.ToInt16(ids.Value); break;
+                        case "BackColor": ids.Read(); ie.BackColor = utftUtils.GetUTFTColor(ids.Value); break;
+                        case "FontColor": ids.Read(); ie.FontColor = utftUtils.GetUTFTColor(ids.Value); break;
+                        case "CanSelect": ids.Read(); ie.CanSelect = Convert.ToBoolean(ids.Value); break;
+                        case "Text": ids.Read(); ie.Text = ids.Value; break;
                     }// ids.Name
                 }//while
         }
 
-        public void LoadProperties(System.IO.FileStream fs)
-        {
-            UInt16 eSize = utftUtils.Read2Bytes(fs);
-            byte[] buff = new byte[eSize];
-            fs.Read(buff, 0, eSize);
-            byte itemtype = buff[0];
-            byte itemid = buff[1];
-            foreach (KeyValuePair<string, TInterfaceElement> ie in listitem)
-            if (ie.Value.GetItemTypeNumber()==itemtype && ie.Value.ID==itemid) 
-            {
-                TInterfaceElement ii = ie.Value;
-                ii.X = (buff[2] << 8) | buff[3];
-                ii.Y = (buff[4] << 8) | buff[5];
-                ii.width = buff[6];
-                ii.heigth = buff[7];
-                ii.BackColor = utftUtils.GetUTFTColor((UInt16)((buff[8] << 8) | buff[9]));
-                ii.FontColor = utftUtils.GetUTFTColor((UInt16)((buff[10] << 8) | buff[11]));
-                byte strl = buff[12];
-                string ss="";
-                for (int i = 0; i < strl; i++)
-                    ss = ss + Convert.ToChar(buff[13 + i]);
-                ii.ItemName = ss;
-                ii.Text = ss;
-                AddItem(ii);
-            }
-        }
     }
 }
