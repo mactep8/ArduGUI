@@ -15,6 +15,8 @@ void InitDisplay()
   GUIScreen.screenFntColor = VGA_WHITE;
   GUIScreen.screenLeft = 0;
   GUIScreen.screenTop = 0;
+  GUIScreen.activeBorderColor = VGA_RED;
+  GUIScreen.passiveBorderColor = VGA_WHITE;
   
   Screen.InitLCD(LANDSCAPE);
   Screen.setFont(SmallFont);
