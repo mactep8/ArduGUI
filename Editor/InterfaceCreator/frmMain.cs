@@ -139,6 +139,7 @@ namespace InterfaceCreator
                 // далее читаем xml и создаем структуру элементов
                 System.Xml.XmlReader ids = System.Xml.XmlReader.Create(IDsFileName);
                 Screen.LoadElements(ids);
+                propertyGrid2.Refresh();
                 // потом из основного файла читаем сами элементы
                 /*int i=0;
                 while (cstr + cbtn > i)
