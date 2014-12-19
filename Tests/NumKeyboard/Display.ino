@@ -47,10 +47,46 @@ byte ea = 0;
 void LoadScreenSetup(uint16_t aLeft, uint16_t aTop)
 {
   byte sSize = scrFile.read();
-  GUIScreen.screenWidth = ReadTwoBytes();
-  GUIScreen.screenHeight = ReadTwoBytes();
-  GUIScreen.screenBkColor = ReadTwoBytes();
-  GUIScreen.screenFntColor = ReadTwoBytes();
+  if (sSize > 1)
+  {
+    GUIScreen.screenWidth = ReadTwoBytes();
+    sSize -=2;
+    Serial.print("GUIScreen.screenWidth = ");Serial.println(GUIScreen.screenWidth);
+  }
+  
+  if (sSize > 1)
+  {
+    GUIScreen.screenHeight = ReadTwoBytes();
+    sSize -=2;
+    Serial.print("GUIScreen.screenHeight = ");Serial.println(GUIScreen.screenHeight);
+  }
+  if (sSize > 1)
+  {
+    GUIScreen.screenBkColor = ReadTwoBytes();
+    sSize -=2;
+    Serial.print("GUIScreen.screenBkColor = ");Serial.println(GUIScreen.screenBkColor);
+  }
+  if (sSize > 1)
+  {
+    GUIScreen.screenFntColor = ReadTwoBytes();
+    sSize -=2;
+    Serial.print("GUIScreen.screenFntColor = ");Serial.println(GUIScreen.screenFntColor);
+  }
+  
+  if (sSize > 1)
+  {
+    GUIScreen.activeBorderColor = ReadTwoBytes();
+    sSize -=2;
+    Serial.print("GUIScreen.activeBorderColor = ");Serial.println(GUIScreen.activeBorderColor);
+  }
+  
+  if (sSize > 1)
+  {
+    GUIScreen.passiveBorderColor = ReadTwoBytes();
+    sSize -=2;
+    Serial.print("GUIScreen.passiveBorderColor = ");Serial.println(GUIScreen.passiveBorderColor);
+  }
+  
   es = scrFile.read();
   ea = scrFile.read();
   GUIScreen.Elements = (tActiveElement *)malloc(sizeof(tActiveElement) * ea);

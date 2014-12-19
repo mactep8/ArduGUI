@@ -65,6 +65,30 @@ namespace InterfaceCreator
                 pnl.Refresh();
             }
         }
+        public VGA_COLOR _activeBorderColor = VGA_COLOR.VGA_RED;
+        public VGA_COLOR ActiveBorderColor
+        {
+            get
+            {
+                return _activeBorderColor;
+            }
+            set
+            {
+                _activeBorderColor = value;
+            }
+        }
+        public VGA_COLOR _passiveBorderColor = VGA_COLOR.VGA_WHITE;
+        public VGA_COLOR PassiveBorderColor
+        {
+            get
+            {
+                return _passiveBorderColor;
+            }
+            set
+            {
+                _passiveBorderColor = value;
+            }
+        }
 
         public MouseEventHandler MouseDown;
         public MouseEventHandler MouseMove;
@@ -147,6 +171,8 @@ namespace InterfaceCreator
             fi.WriteElementString("SCREEN_Height", Height.ToString());
             fi.WriteElementString("SCREEN_BackColor", BackColor.ToString());
             fi.WriteElementString("SCREEN_FontColor", FontColor.ToString());
+            fi.WriteElementString("SCREEN_ABorderColor", ActiveBorderColor.ToString());
+            fi.WriteElementString("SCREEN_PBorderColor", PassiveBorderColor.ToString());
             fi.WriteEndElement();
 
             byte lbl = 0;
@@ -164,6 +190,10 @@ namespace InterfaceCreator
             UInt16 clr = utftUtils.GetUTFTColorBytes(BackColor);
             utftUtils.Save2Bytes(fs, clr);
             clr = utftUtils.GetUTFTColorBytes(FontColor);
+            utftUtils.Save2Bytes(fs, clr);
+            clr = utftUtils.GetUTFTColorBytes(ActiveBorderColor);
+            utftUtils.Save2Bytes(fs, clr);
+            clr = utftUtils.GetUTFTColorBytes(PassiveBorderColor);
             utftUtils.Save2Bytes(fs, clr);
 
             fs.WriteByte((byte)lbl);
@@ -210,6 +240,16 @@ namespace InterfaceCreator
                             {
                                 ids.Read();
                                 FontColor = utftUtils.GetUTFTColor(ids.Value);
+                            }; break;
+                        case "SCREEN_ABorderColor":
+                            {
+                                ids.Read();
+                                ActiveBorderColor = utftUtils.GetUTFTColor(ids.Value);
+                            }; break;
+                        case "SCREEN_PBorderColor":
+                            {
+                                ids.Read();
+                                PassiveBorderColor = utftUtils.GetUTFTColor(ids.Value);
                             }; break;
                         case "Element":
                             ie = new TInterfaceElement();

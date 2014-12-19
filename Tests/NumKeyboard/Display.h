@@ -34,7 +34,6 @@ typedef struct {
   uint16_t screenFntColor;
   uint16_t screenLeft;
   uint16_t screenTop;
-  // not in file
   uint16_t activeBorderColor;
   uint16_t passiveBorderColor;
 } tGUIScreen;
