@@ -44,4 +44,12 @@ tGUIScreen GUIScreen;
 
 
   
+
+uint16_t screenWidth = 400;
+uint16_t screenHeight = 240;
+uint16_t screenBkColor = VGA_BLACK;
+uint16_t screenFntColor = VGA_WHITE;
+uint16_t screenLeft = 0;
+uint16_t screenTop = 0;
+  
 #endif

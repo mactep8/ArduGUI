@@ -28,6 +28,17 @@ void InitDisplay()
 
 void LoadScreenFromFile(char * aFileName, uint16_t aLeft, uint16_t aTop)
 {
+<<<<<<< .mine
+  scrFile = SD.open(aFileName);
+  
+  if (scrFile) 
+  {
+    LoadScreenSetup();
+    LoadElements();
+    UpdateElements(aLeft, aTop);
+    scrFile.close();
+  }
+=======
   scrFile = SD.open(aFileName);
   
   if (scrFile) 
@@ -37,6 +48,7 @@ void LoadScreenFromFile(char * aFileName, uint16_t aLeft, uint16_t aTop)
     UpdateActiveElements();
     scrFile.close();
   }
+>>>>>>> .r5
 }
 
 byte es = 0;
@@ -45,12 +57,24 @@ byte ea = 0;
 void LoadScreenSetup(uint16_t aLeft, uint16_t aTop)
 {
   byte sSize = scrFile.read();
+<<<<<<< .mine
+  screenWidth = ReadTwoBytes();
+  screenHeight = ReadTwoBytes();
+  screenBkColor = ReadTwoBytes();
+  screenFntColor = ReadTwoBytes();
+=======
   GUIScreen.screenWidth = ReadTwoBytes();
   GUIScreen.screenHeight = ReadTwoBytes();
   GUIScreen.screenBkColor = ReadTwoBytes();
   GUIScreen.screenFntColor = ReadTwoBytes();
+>>>>>>> .r5
   es = scrFile.read();
   ea = scrFile.read();
+<<<<<<< .mine
+  Elements = (tActiveElement *)malloc(sizeof(tActiveElement) * ea);
+  ElementsCount = ea;
+  Serial.print("Elements Count ="); Serial.println(ElementsCount);
+=======
   GUIScreen.Elements = (tActiveElement *)malloc(sizeof(tActiveElement) * ea);
   GUIScreen.ElementsCount = ea;
   
@@ -76,6 +100,7 @@ void LoadScreenSetup(uint16_t aLeft, uint16_t aTop)
       GUIScreen.screenTop + GUIScreen.screenHeight);
     Screen.setColor(GUIScreen.screenFntColor);
   }
+>>>>>>> .r5
 }
 
 void LoadElement()
@@ -104,6 +129,18 @@ void LoadElement()
   }
   else
   {
+<<<<<<< .mine
+    Elements[itemid].X = X;
+    Elements[itemid].Y = Y;
+    Elements[itemid].width = width;
+    Elements[itemid].height = height;
+    Elements[itemid].BkColor = bk_color;
+    Elements[itemid].FntColor = fnt_color;
+    Elements[itemid].CanFocus = CanSelect;
+    Elements[itemid].txt_len = lng;
+    Elements[itemid].txt = txt;
+    Serial.println("Element stored.");
+=======
     GUIScreen.Elements[itemid].X = X;
     GUIScreen.Elements[itemid].Y = Y;
     GUIScreen.Elements[itemid].width = width;
@@ -113,6 +150,7 @@ void LoadElement()
     GUIScreen.Elements[itemid].CanFocus = CanSelect;
     GUIScreen.Elements[itemid].txt_len = lng;
     GUIScreen.Elements[itemid].txt = txt;
+>>>>>>> .r5
   }
   
 }
@@ -127,8 +165,36 @@ void LoadElements()
   }
 }
 
+<<<<<<< .mine
+void UpdateElements(uint16_t aLeft, uint16_t aTop)
+=======
 void UpdateActiveElements()
+>>>>>>> .r5
 {
+  uint16_t xmax = Screen.getDisplayXSize();
+  uint16_t ymax = Screen.getDisplayYSize();
+  screenLeft = aLeft;
+  screenTop = aTop;
+  if (aLeft + screenWidth > xmax) screenLeft = xmax-screenWidth;
+  if (aTop + screenHeight > ymax) screenTop = ymax-screenHeight;
+  if (screenLeft==0 && screenTop==0 && xmax==screenWidth && ymax==screenHeight)
+  {
+    Screen.clrScr();
+    Screen.setBackColor(screenBkColor);
+    Screen.setColor(screenFntColor);
+  }
+  else
+  {
+    Screen.setColor(screenBkColor);
+    Screen.drawRoundRect(
+      screenLeft,
+      screenTop,
+      screenLeft + screenWidth,
+      screenTop + screenHeight);
+    Screen.setColor(screenFntColor);
+  }
+
+
   Serial.println("Drawing Elements...");
   for(byte i=0;i<GUIScreen.ElementsCount;i++)
     UpdateElement(i);
@@ -199,4 +265,11 @@ void CloseScreen()
   for (uint8_t i=0;i<GUIScreen.ElementsCount;i++)
     free(GUIScreen.Elements[i].txt);
   free(GUIScreen.Elements);
+}
+
+void CloseScreen()
+{
+  for (uint8_t i=0;i<ElementsCount;i++)
+    free(Elements[i].txt);
+  free(Elements);
 }
