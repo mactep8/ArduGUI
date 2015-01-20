@@ -123,14 +123,15 @@ void LoadElement()
   byte itemid = scrFile.read();
   Serial.print("itemtype ="); Serial.println(itemtype);
   Serial.print("itemid ="); Serial.println(itemid);
-  uint16_t X = ReadTwoBytes();
-  uint16_t Y = ReadTwoBytes();
+  uint16_t X = ReadTwoBytes() + GUIScreen.screenLeft;
+  uint16_t Y = ReadTwoBytes() + GUIScreen.screenTop;
   byte width = scrFile.read();
   byte height = scrFile.read();
   uint16_t bk_color = ReadTwoBytes();
   uint16_t fnt_color = ReadTwoBytes();
   byte CanSelect = scrFile.read();
   byte lng = scrFile.read();
+  Serial.print("lng ="); Serial.println(lng);
   char * txt = (char *)malloc(lng+1);
   for (byte i=0;i<lng;i++)
     txt[i] = scrFile.read();
@@ -217,7 +218,7 @@ int TouchPress()
 
 void DrawButtonBorder(uint8_t buttonID)
 {
-  if (LastButton == buttonID)
+  if (LastButton == buttonID )
   {
     Screen.setColor(GUIScreen.activeBorderColor);
   }

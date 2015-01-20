@@ -183,7 +183,7 @@ namespace InterfaceCreator
                 e.Value.ID = lbl++;
                 else e.Value.ID = btn++;
             }
-            fs.WriteByte(10);// размер данных экрана
+            fs.WriteByte(12);// размер данных экрана
             utftUtils.Save2Bytes(fs, (UInt16)Width);
             utftUtils.Save2Bytes(fs, (UInt16)Height);
 
