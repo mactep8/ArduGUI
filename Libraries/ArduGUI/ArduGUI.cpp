@@ -278,3 +278,42 @@ tActiveElement * tArduGUI::GetElement(uint8_t indx)
 {
 	return &(GUIScreen.Elements[indx]);
 }
+
+void tArduGUI::loadBitmap(int x, int y, int sx, int sy, char *filename)
+{
+	uint8_t ch, cl;
+	uint16_t lines, line_pos;
+
+	scrFile = SD.open(filename);
+	if (scrFile)
+	{
+		lines = 0;
+		line_pos = 0;
+		cbi(Screen->P_CS, Screen->B_CS);
+
+		if (Screen->orient==PORTRAIT)
+		{
+			Screen->setXY(x, y, x+sx-1, y+sy-1);
+		}
+		while (scrFile.available())
+		{
+			ch=scrFile.read();
+			cl=scrFile.read();
+
+			if (Screen->orient!=PORTRAIT)
+			{
+				if (line_pos==0) Screen->setXY(x+lines, y, x+lines, y+sy-1);
+			}
+			Screen->LCD_Write_DATA((char)ch, (char)cl);
+			line_pos++;
+			if (line_pos>sx-1)
+			{
+				line_pos = 0;
+				lines++;
+			}
+		}
+		scrFile.close();
+		Screen->clrXY();
+		sbi(Screen->P_CS, Screen->B_CS);
+	}
+}

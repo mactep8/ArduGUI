@@ -127,5 +127,25 @@ namespace InterfaceCreator
 
             return res;
         }
+
+        public static void SaveRAWImage(string name, Image Image)
+        {
+            Bitmap bitmap = new Bitmap(Image);
+            SizeF bnd = Image.PhysicalDimension;
+            System.IO.FileStream fm = new System.IO.FileStream(name+".raw", System.IO.FileMode.Create);
+            for (int y=0;y<bnd.Height;y++)
+                for (int x = 0; x < bnd.Width; x++)
+                {
+                    Color c = bitmap.GetPixel(x, y);
+                    byte fch = (byte)((c.R & 248) | c.G >> 5);
+                    byte fcl = (byte)((c.G & 28) << 3 | c.B >> 3);
+                    fm.WriteByte(fch);
+                    fm.WriteByte(fcl);
+                }
+            fm.Close();
+            fm = new System.IO.FileStream(name + ".bmp", System.IO.FileMode.Create);
+            Image.Save(fm, System.Drawing.Imaging.ImageFormat.Bmp);
+            fm.Close();
+        }
     }
 }

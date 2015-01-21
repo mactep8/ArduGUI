@@ -43,11 +43,11 @@ class tArduGUI
 		void CloseScreen();
 		tActiveElement * GetElement(uint8_t indx);
 		void UpdateElement(byte indx);
-
 	protected:
 		UTFT *Screen;
 		UTouch *myTouch;
 		tGUIScreen GUIScreen;
+		void loadBitmap(int x, int y, int sx, int sy, char *filename);
 	private:
 		int LastButton;
 		int x_touch, y_touch;
