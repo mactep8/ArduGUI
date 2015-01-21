@@ -15,7 +15,7 @@ namespace InterfaceCreator
         private VGA_COLOR _BackColor;
         private VGA_COLOR _fontcolor;
 
-        public System.Windows.Forms.Panel pnl;
+        public System.Windows.Forms.PictureBox pnl;
 
         public int Width
         {
@@ -94,11 +94,34 @@ namespace InterfaceCreator
         public MouseEventHandler MouseMove;
         public ContextMenuStrip pmElement;
         public cbElementsAddItem AddItem;
+        public System.Drawing.Image Image
+        {
+            get
+            {
+                return pnl.Image;
+            }
+            set
+            {
+                Image = value;
+            }
+        }
+        public string _scr_name = "Screen1";
+        public string ScreenName
+        {
+            get
+            {
+                return _scr_name;
+            }
+            set
+            {
+                _scr_name = value;
+            }
+        }
 
         public void CreateElement()
         {
             Button btn = new Button();
-
+            
             btn.Parent = pnl;
             btn.MouseDown += new MouseEventHandler(MouseDown);
             btn.MouseMove += new MouseEventHandler(MouseMove);
@@ -164,6 +187,7 @@ namespace InterfaceCreator
 
         public void Save(System.IO.FileStream fs, System.Xml.XmlWriter fi, System.IO.StreamWriter fd)
         {
+            //pnl.Image.Save(null, System.Drawing.Imaging.ImageFormat.Bmp);
             fi.WriteStartDocument();
             fi.WriteStartElement("Document");
             fi.WriteStartElement("Screen");

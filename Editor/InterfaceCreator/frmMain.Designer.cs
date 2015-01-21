@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnLoadScreen = new System.Windows.Forms.Button();
             this.btnSaveScreen = new System.Windows.Forms.Button();
             this.btnCreateLabel = new System.Windows.Forms.Button();
             this.btnCreateElement = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.FaceBox = new System.Windows.Forms.Panel();
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -48,8 +48,10 @@
             this.pmElement = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.btnLoadScreen = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.btnCreatePanel = new System.Windows.Forms.Button();
+            this.btnSwitch = new System.Windows.Forms.Button();
+            this.FaceBox = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -58,10 +60,13 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.pmElement.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.FaceBox)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnSwitch);
+            this.panel1.Controls.Add(this.btnCreatePanel);
             this.panel1.Controls.Add(this.btnLoadScreen);
             this.panel1.Controls.Add(this.btnSaveScreen);
             this.panel1.Controls.Add(this.btnCreateLabel);
@@ -71,6 +76,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(774, 94);
             this.panel1.TabIndex = 0;
+            // 
+            // btnLoadScreen
+            // 
+            this.btnLoadScreen.Location = new System.Drawing.Point(431, 12);
+            this.btnLoadScreen.Name = "btnLoadScreen";
+            this.btnLoadScreen.Size = new System.Drawing.Size(75, 69);
+            this.btnLoadScreen.TabIndex = 3;
+            this.btnLoadScreen.Tag = "";
+            this.btnLoadScreen.Text = "Load Screen";
+            this.btnLoadScreen.UseVisualStyleBackColor = true;
+            this.btnLoadScreen.Click += new System.EventHandler(this.btnLoadScreen_Click);
             // 
             // btnSaveScreen
             // 
@@ -85,7 +101,7 @@
             // 
             // btnCreateLabel
             // 
-            this.btnCreateLabel.Location = new System.Drawing.Point(97, 12);
+            this.btnCreateLabel.Location = new System.Drawing.Point(250, 12);
             this.btnCreateLabel.Name = "btnCreateLabel";
             this.btnCreateLabel.Size = new System.Drawing.Size(75, 69);
             this.btnCreateLabel.TabIndex = 1;
@@ -96,12 +112,12 @@
             // 
             // btnCreateElement
             // 
-            this.btnCreateElement.Location = new System.Drawing.Point(16, 12);
+            this.btnCreateElement.Location = new System.Drawing.Point(7, 12);
             this.btnCreateElement.Name = "btnCreateElement";
             this.btnCreateElement.Size = new System.Drawing.Size(75, 69);
             this.btnCreateElement.TabIndex = 0;
             this.btnCreateElement.Tag = "";
-            this.btnCreateElement.Text = "Create Element";
+            this.btnCreateElement.Text = "Create Button";
             this.btnCreateElement.UseVisualStyleBackColor = true;
             this.btnCreateElement.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -124,13 +140,6 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(499, 312);
             this.panel4.TabIndex = 2;
-            // 
-            // FaceBox
-            // 
-            this.FaceBox.Location = new System.Drawing.Point(6, 6);
-            this.FaceBox.Name = "FaceBox";
-            this.FaceBox.Size = new System.Drawing.Size(200, 100);
-            this.FaceBox.TabIndex = 0;
             // 
             // splitter1
             // 
@@ -239,21 +248,39 @@
             this.saveFileDialog1.DefaultExt = "scr";
             this.saveFileDialog1.Filter = "Screens|*.scr";
             // 
-            // btnLoadScreen
-            // 
-            this.btnLoadScreen.Location = new System.Drawing.Point(431, 12);
-            this.btnLoadScreen.Name = "btnLoadScreen";
-            this.btnLoadScreen.Size = new System.Drawing.Size(75, 69);
-            this.btnLoadScreen.TabIndex = 3;
-            this.btnLoadScreen.Tag = "";
-            this.btnLoadScreen.Text = "Load Screen";
-            this.btnLoadScreen.UseVisualStyleBackColor = true;
-            this.btnLoadScreen.Click += new System.EventHandler(this.btnLoadScreen_Click);
-            // 
             // openFileDialog1
             // 
             this.openFileDialog1.DefaultExt = "scr";
             this.openFileDialog1.Filter = "Screens|*.scr";
+            // 
+            // btnCreatePanel
+            // 
+            this.btnCreatePanel.Location = new System.Drawing.Point(88, 12);
+            this.btnCreatePanel.Name = "btnCreatePanel";
+            this.btnCreatePanel.Size = new System.Drawing.Size(75, 69);
+            this.btnCreatePanel.TabIndex = 4;
+            this.btnCreatePanel.Tag = "";
+            this.btnCreatePanel.Text = "Create Panel";
+            this.btnCreatePanel.UseVisualStyleBackColor = true;
+            // 
+            // btnSwitch
+            // 
+            this.btnSwitch.Location = new System.Drawing.Point(169, 12);
+            this.btnSwitch.Name = "btnSwitch";
+            this.btnSwitch.Size = new System.Drawing.Size(75, 69);
+            this.btnSwitch.TabIndex = 5;
+            this.btnSwitch.Tag = "";
+            this.btnSwitch.Text = "Create Switch";
+            this.btnSwitch.UseVisualStyleBackColor = true;
+            // 
+            // FaceBox
+            // 
+            this.FaceBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FaceBox.Location = new System.Drawing.Point(6, 6);
+            this.FaceBox.Name = "FaceBox";
+            this.FaceBox.Size = new System.Drawing.Size(187, 105);
+            this.FaceBox.TabIndex = 1;
+            this.FaceBox.TabStop = false;
             // 
             // frmMain
             // 
@@ -272,6 +299,7 @@
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.pmElement.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.FaceBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -286,7 +314,6 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Panel FaceBox;
         private System.Windows.Forms.Button btnCreateElement;
         private System.Windows.Forms.ComboBox cbElements;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
@@ -299,6 +326,9 @@
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.Button btnLoadScreen;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button btnSwitch;
+        private System.Windows.Forms.Button btnCreatePanel;
+        private System.Windows.Forms.PictureBox FaceBox;
     }
 }
 
