@@ -1,7 +1,7 @@
 #include <UTFT.h>
 #include <UTouch.h>
 #include <ArduGUI.h>
-//#include "NumEdit.h"
+#include "NumEdit.h"
 
 // Редактируемое число
 uint16_t Value = 0;
@@ -24,9 +24,9 @@ void loop()
   buttonid = myGUI.TouchPress();
   if (buttonid >=0) {
     Serial.print("ID = ");Serial.println(buttonid);
-    //NumEditButtonUpdate();
-    /*if (!GUIScreen.Elements[buttonid].CanFocus)
-      myGUI.DrawButtonBorder(buttonid);*/
+    NumEditButtonUpdate();
+    if (!myGUI.GetElement(buttonid)->CanFocus)
+      myGUI.DrawButtonBorder(buttonid);
   }
   delay(10);
 }

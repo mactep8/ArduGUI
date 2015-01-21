@@ -1,0 +1,14 @@
+#define NUM_1 0
+#define NUM_2 1
+#define NUM_3 2
+#define NUM_4 3
+#define NUM_5 4
+#define NUM_6 5
+#define NUM_7 6
+#define NUM_8 7
+#define NUM_9 8
+#define NUM_0 9
+#define NUM_RESET 10
+#define NUM_CANCEL 11
+#define NUM_ENTER 12
+#define NUM_VALUE 13
