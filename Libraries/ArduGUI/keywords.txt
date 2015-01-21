@@ -1,1 +1,26 @@
+#######################################
+# Syntax Coloring Map For Ultrasound
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+tArduGUI	KEYWORD1
 ArduGUI	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+InitGUI	KEYWORD2
+LoadScreenFromFile 	KEYWORD2
+TouchPress	KEYWORD2
+DrawButtonBorder	KEYWORD2
+CloseScreen	KEYWORD2
+GetElement	KEYWORD2
+UpdateElement	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
