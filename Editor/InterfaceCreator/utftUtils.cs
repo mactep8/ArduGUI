@@ -128,13 +128,13 @@ namespace InterfaceCreator
             return res;
         }
 
-        public static void SaveRAWImage(string name, Image Image)
+        public static void SaveRAWImage(string aname, Image Image)
         {
             Bitmap bitmap = new Bitmap(Image);
             SizeF bnd = Image.PhysicalDimension;
-            System.IO.FileStream fm = new System.IO.FileStream(name+".raw", System.IO.FileMode.Create);
-            for (int y=0;y<bnd.Height;y++)
-                for (int x = 0; x < bnd.Width; x++)
+            System.IO.FileStream fm = new System.IO.FileStream(aname+".raw", System.IO.FileMode.Create);
+            for (int x = 0; x < bnd.Width; x++)
+                for (int y=0;y<bnd.Height;y++)
                 {
                     Color c = bitmap.GetPixel(x, y);
                     byte fch = (byte)((c.R & 248) | c.G >> 5);
@@ -143,7 +143,7 @@ namespace InterfaceCreator
                     fm.WriteByte(fcl);
                 }
             fm.Close();
-            fm = new System.IO.FileStream(name + ".bmp", System.IO.FileMode.Create);
+            fm = new System.IO.FileStream(aname + ".bmp", System.IO.FileMode.Create);
             Image.Save(fm, System.Drawing.Imaging.ImageFormat.Bmp);
             fm.Close();
         }

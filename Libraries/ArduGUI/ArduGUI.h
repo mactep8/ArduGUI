@@ -47,7 +47,7 @@ class tArduGUI
 		UTFT *Screen;
 		UTouch *myTouch;
 		tGUIScreen GUIScreen;
-		void loadBitmap(int x, int y, int sx, int sy, char *filename);
+		void loadDesctop(int x, int y, int sx, int sy, char *filename);
 	private:
 		int LastButton;
 		int x_touch, y_touch;

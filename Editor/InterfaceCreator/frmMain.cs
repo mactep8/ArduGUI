@@ -102,24 +102,13 @@ namespace InterfaceCreator
             if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 string MainFileName = saveFileDialog1.FileName;// +".scr";
-                if (MainFileName.Substring(MainFileName.Length - 4) != ".scr") MainFileName = MainFileName + ".scr";
-                string IDsFileName = MainFileName.Substring(0,MainFileName.Length-4) + ".ids";
-                string DefsFileName = IDsFileName.Substring(0, IDsFileName.Length - 4) + ".h";
 
-                System.IO.FileStream fm = new System.IO.FileStream(MainFileName, System.IO.FileMode.Create);
+
+
+
+                Screen.Save(MainFileName);
+
                 
-
-                System.Xml.XmlWriter fi = System.Xml.XmlWriter.Create(IDsFileName);
-                System.IO.StreamWriter fd = new System.IO.StreamWriter(DefsFileName);
-
-                Screen.Save(fm, fi, fd);
-
-                fm.Close();
-                fi.Close();
-                fd.Close();
-
-                fm.Dispose();
-                fd.Dispose();
             }
         }
 
@@ -129,10 +118,9 @@ namespace InterfaceCreator
             {
                 string MainFileName = openFileDialog1.FileName;// +".scr";
                 string IDsFileName = MainFileName.Substring(0, MainFileName.Length - 4) + ".ids";
-                string DefsFileName = IDsFileName.Substring(0, IDsFileName.Length - 4) + ".h";
 
                 // сначала открываем основной файл и читаем настройки экрана
-                System.IO.FileStream fm = new System.IO.FileStream(MainFileName, System.IO.FileMode.Open);
+                //System.IO.FileStream fm = new System.IO.FileStream(MainFileName, System.IO.FileMode.Open);
 
                 /*byte cstr = 0, cbtn = 0;
                 Screen.LoadScreen(fm, ref cstr, ref cbtn);*/
@@ -148,8 +136,8 @@ namespace InterfaceCreator
                     i++;
                 }*/
                 // закрываем все
-                fm.Close();
-                fm.Dispose();
+                //fm.Close();
+                //fm.Dispose();
                 ids.Close();
             }
         }

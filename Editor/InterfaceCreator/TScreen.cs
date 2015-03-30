@@ -102,7 +102,7 @@ namespace InterfaceCreator
             }
             set
             {
-                Image = value;
+                pnl.Image = value;
             }
         }
         public string _scr_name = "Screen1";
@@ -185,8 +185,16 @@ namespace InterfaceCreator
                 }
         }
 
-        public void Save(System.IO.FileStream fs, System.Xml.XmlWriter fi, System.IO.StreamWriter fd)
+        public void Save(string MainFileName)
         {
+            if (MainFileName.Substring(MainFileName.Length - 4) != ".scr") 
+                MainFileName = MainFileName + ".scr";
+            string IDsFileName = MainFileName.Substring(0,MainFileName.Length-4) + ".ids";
+            string DefsFileName = IDsFileName.Substring(0, IDsFileName.Length - 4) + ".h";
+            System.IO.FileStream fs = new System.IO.FileStream(MainFileName, System.IO.FileMode.Create);
+            System.Xml.XmlWriter fi = System.Xml.XmlWriter.Create(IDsFileName);
+            System.IO.StreamWriter fd = new System.IO.StreamWriter(DefsFileName);
+
             //pnl.Image.Save(null, System.Drawing.Imaging.ImageFormat.Bmp);
             fi.WriteStartDocument();
             fi.WriteStartElement("Document");
@@ -197,6 +205,12 @@ namespace InterfaceCreator
             fi.WriteElementString("SCREEN_FontColor", FontColor.ToString());
             fi.WriteElementString("SCREEN_ABorderColor", ActiveBorderColor.ToString());
             fi.WriteElementString("SCREEN_PBorderColor", PassiveBorderColor.ToString());
+            if (pnl.Image != null)
+            {
+                string aname = String.Format("{0}\\{1}",System.IO.Path.GetDirectoryName(MainFileName),ScreenName);
+                utftUtils.SaveRAWImage(aname, pnl.Image);
+                fi.WriteElementString("Desctop", ScreenName);
+            }
             fi.WriteEndElement();
 
             byte lbl = 0;
@@ -207,7 +221,7 @@ namespace InterfaceCreator
                 e.Value.ID = lbl++;
                 else e.Value.ID = btn++;
             }
-            fs.WriteByte(12);// размер данных экрана
+            fs.WriteByte((byte)(13 + ScreenName.Length));// размер данных экрана
             utftUtils.Save2Bytes(fs, (UInt16)Width);
             utftUtils.Save2Bytes(fs, (UInt16)Height);
 
@@ -222,6 +236,9 @@ namespace InterfaceCreator
 
             fs.WriteByte((byte)lbl);
             fs.WriteByte((byte)btn);
+            fs.WriteByte((byte)ScreenName.Length);
+            for (int i = 0; i < ScreenName.Length; i++)
+                fs.WriteByte(Convert.ToByte(ScreenName[i]));
             fi.WriteStartElement("Elements");
 
             foreach (KeyValuePair<string, TInterfaceElement> e in listitem)
@@ -235,6 +252,13 @@ namespace InterfaceCreator
 
             fi.WriteEndElement();
             fi.WriteEndDocument();
+
+            fs.Close();
+            fi.Close();
+            fd.Close();
+
+            fs.Dispose();
+            fd.Dispose();
         }
 
         public void LoadElements(System.Xml.XmlReader ids)
@@ -275,6 +299,11 @@ namespace InterfaceCreator
                                 ids.Read();
                                 PassiveBorderColor = utftUtils.GetUTFTColor(ids.Value);
                             }; break;
+                        case "Desctop":
+                            {
+                                ids.Read();
+                                Image = new System.Drawing.Bitmap(ids.Value);
+                            };break;
                         case "Element":
                             ie = new TInterfaceElement();
                             break;

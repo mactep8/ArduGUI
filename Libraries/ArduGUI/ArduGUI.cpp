@@ -1,5 +1,7 @@
 #include "ArduGUI.h"
 
+#define DEBUG
+
 uint16_t tArduGUI::TFT2TOUCH_X(uint16_t x){ return map(GUIScreen.screenWidth-(x),0,GUIScreen.screenWidth,0,320); }
 uint16_t tArduGUI::TFT2TOUCH_Y(uint16_t x){ return x; }
 
@@ -110,6 +112,7 @@ void tArduGUI::LoadScreenSetup(uint16_t aLeft, uint16_t aTop)
   
   es = scrFile.read();
   ea = scrFile.read();
+  
   GUIScreen.Elements = (tActiveElement *)malloc(sizeof(tActiveElement) * ea);
   GUIScreen.ElementsCount = ea;
   
@@ -134,6 +137,30 @@ void tArduGUI::LoadScreenSetup(uint16_t aLeft, uint16_t aTop)
       GUIScreen.screenLeft + GUIScreen.screenWidth,
       GUIScreen.screenTop + GUIScreen.screenHeight);
     Screen->setColor(GUIScreen.screenFntColor);
+  }
+
+  uint8_t dt_img_lng = scrFile.read();
+  #ifdef DEBUG
+    Serial.print("dt_img_lng = ");Serial.println(dt_img_lng);
+  #endif
+  char * dt_img;
+  if (dt_img_lng > 0)
+  {
+	  dt_img = (char *)malloc(dt_img_lng + 5);
+	  for (int i = 0; i < dt_img_lng; i++)
+	  {
+		  dt_img[i] = scrFile.read();
+	  }
+	  dt_img[dt_img_lng] = '.';
+	  dt_img[dt_img_lng+1] = 'r';
+	  dt_img[dt_img_lng+2] = 'a';
+	  dt_img[dt_img_lng+3] = 'w';
+	  dt_img[dt_img_lng+4] = '\0';
+	  #ifdef DEBUG
+	      Serial.print("dt_img = ");Serial.println(dt_img);
+	  #endif
+	  loadDesctop(GUIScreen.screenLeft, GUIScreen.screenTop, GUIScreen.screenWidth, GUIScreen.screenHeight, dt_img);
+	  free(dt_img);
   }
 }
 
@@ -279,11 +306,12 @@ tActiveElement * tArduGUI::GetElement(uint8_t indx)
 	return &(GUIScreen.Elements[indx]);
 }
 
-void tArduGUI::loadBitmap(int x, int y, int sx, int sy, char *filename)
+void tArduGUI::loadDesctop(int x, int y, int sx, int sy, char *filename)
 {
 	uint8_t ch, cl;
+	uint16_t xxx;
 	uint16_t lines, line_pos;
-
+	byte * buf = (byte *)malloc(GUIScreen.screenHeight * 2);
 	scrFile = SD.open(filename);
 	if (scrFile)
 	{
@@ -291,29 +319,33 @@ void tArduGUI::loadBitmap(int x, int y, int sx, int sy, char *filename)
 		line_pos = 0;
 		cbi(Screen->P_CS, Screen->B_CS);
 
-		if (Screen->orient==PORTRAIT)
+		/*if (Screen->orient==PORTRAIT)
 		{
 			Screen->setXY(x, y, x+sx-1, y+sy-1);
-		}
+		}*/
 		while (scrFile.available())
 		{
-			ch=scrFile.read();
-			cl=scrFile.read();
+			//ch=scrFile.read();
+			//cl=scrFile.read();
+			scrFile.read(buf, GUIScreen.screenHeight * 2);
 
-			if (Screen->orient!=PORTRAIT)
+			//if (Screen->orient!=PORTRAIT)
 			{
 				if (line_pos==0) Screen->setXY(x+lines, y, x+lines, y+sy-1);
 			}
-			Screen->LCD_Write_DATA((char)ch, (char)cl);
-			line_pos++;
-			if (line_pos>sx-1)
+			for (int pcol=0;pcol<GUIScreen.screenHeight;pcol++)
 			{
-				line_pos = 0;
-				lines++;
+				xxx = pcol * 2;
+				ch = buf[xxx];
+				xxx++;
+				cl = buf[xxx];
+				Screen->LCD_Write_DATA((char)ch, (char)cl);
 			}
+			lines++;
 		}
 		scrFile.close();
 		Screen->clrXY();
 		sbi(Screen->P_CS, Screen->B_CS);
 	}
+	free(buf);
 }
